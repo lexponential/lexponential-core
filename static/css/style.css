@@ -1,0 +1,18 @@
+body {
+    font-family: sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+.header {
+    background: #333;
+    text-align: right;
+    padding: 20px;
+    margin: 0;
+    color: #fff;
+}
+
+#chart {
+    margin: 20px;
+}
+
