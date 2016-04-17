@@ -101,8 +101,9 @@
 	            .header("Content-Type", "application/json")
 	            .post(data, function(err, rawData){
 	                if (err) console.log(err);
-	                console.log("got response", rawData);
-	                state.lexemes.push(rawData);
+	                var res = rawData;
+	                console.log("got response", res);
+	                state.lexemes.push(lexeme);
 	             });
 	    };
 	
@@ -259,8 +260,8 @@
 	    return inputArea;
 	
 	    function save () {
-	        console.log(inputArea.value);
-	        coreLogic.addLexeme(inputArea.value);
+	        console.log(lexemeInput);
+	        coreLogic.addLexeme(lexemeInput.value);
 	    };
 	};
 	

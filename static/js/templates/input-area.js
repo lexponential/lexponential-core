@@ -25,8 +25,8 @@ module.exports = function (coreLogic) {
     return inputArea;
 
     function save () {
-        console.log(inputArea.value);
-        coreLogic.addLexeme(inputArea.value);
+        console.log(lexemeInput);
+        coreLogic.addLexeme(lexemeInput.value);
     };
 };
 
