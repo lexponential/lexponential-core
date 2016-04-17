@@ -86,7 +86,24 @@
 	module.exports = function () {
 	    var state = {
 	        nodes: [],
-	        edges: []
+	        edges: [],
+	        lexemes: []
+	    };
+	
+	    this.getLexemes = function () {
+	        return deepCopy(state.lexemes);
+	    };
+	
+	    this.addLexeme = function (lexeme) {
+	        url = config.baseURL + '/lexemes/create';
+	        var data = JSON.stringify({lexemes: lexeme});
+	        d3.xhr(url)
+	            .header("Content-Type", "application/json")
+	            .post(data, function(err, rawData){
+	                if (err) console.log(err);
+	                console.log("got response", rawData);
+	                state.lexemes.push(rawData);
+	             });
 	    };
 	
 	    this.getNodes = function () {
@@ -142,11 +159,11 @@
 	
 	var t = {
 	  header: __webpack_require__(5),
-	  graph: __webpack_require__(6)
+	  inputArea: __webpack_require__(6)
 	};
 	
 	var main = function (coreLogic) {
-	  append(document.body, t.header(), t.graph(coreLogic));
+	  append(document.body, t.header(), t.inputArea(coreLogic));
 	};
 	
 	module.exports = main;
@@ -220,10 +237,8 @@
 	var append = __webpack_require__(4).append;
 	
 	var t = {
-	    graphNode: function (node, coreLogic) {
-	        var n = el('div', 'edutomic-node');
-	        n.innerText = node.value;
-	        return n;
+	    lexemeInput: function () {
+	        return  el('input', 'lexeme-input');
 	    },
 	
 	    button: function (innerText, onclick) {
@@ -234,24 +249,19 @@
 	    }
 	};
 	
+	
 	module.exports = function (coreLogic) {
-	    var graph = el('div', 'edutomic-graph'); 
-	    var addNodeButton = t.button('Add Node', addNode);
-	    append(graph, addNodeButton);
+	    var inputArea = el('div', 'input-area');
+	    var lexemeInput = t.lexemeInput();
+	    var saveButton = t.button('Save', save);
 	
-	    var nodes = coreLogic.getNodes();
+	    append(inputArea, lexemeInput, saveButton);
+	    return inputArea;
 	
-	    for (var i = 0; i < nodes.length; i++) {
-	        append(graph, t.graphNode(nodes[i], coreLogic));
-	    }
-	
-	    function addNode() {
-	        var node = coreLogic.addNode(uuid());
-	        var gNode = t.graphNode(node, coreLogic);
-	        append(graph, gNode);
+	    function save () {
+	        console.log(inputArea.value);
+	        coreLogic.addLexeme(inputArea.value);
 	    };
-	
-	    return graph;
 	};
 	
 

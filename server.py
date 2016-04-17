@@ -39,7 +39,7 @@ def get_lexemes (lexeme):
 @app.route('/lexemes/create', methods=['POST'])
 def create_lexeme ():
     payload = request.get_json()
-    lexemes = payload['lexemes']
+    print payload # lexemes = payload['lexemes']
     # guard clause to  ensure value is valid
     lexeme = Lexeme('dog', 'english', 'spanish')
     db.session.add(lexeme)

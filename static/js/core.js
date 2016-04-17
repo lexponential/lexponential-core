@@ -16,7 +16,24 @@ function Edge (from, to) {
 module.exports = function () {
     var state = {
         nodes: [],
-        edges: []
+        edges: [],
+        lexemes: []
+    };
+
+    this.getLexemes = function () {
+        return deepCopy(state.lexemes);
+    };
+
+    this.addLexeme = function (lexeme) {
+        url = config.baseURL + '/lexemes/create';
+        var data = JSON.stringify({lexemes: lexeme});
+        d3.xhr(url)
+            .header("Content-Type", "application/json")
+            .post(data, function(err, rawData){
+                if (err) console.log(err);
+                console.log("got response", rawData);
+                state.lexemes.push(rawData);
+             });
     };
 
     this.getNodes = function () {

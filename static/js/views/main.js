@@ -4,11 +4,11 @@ var remove = domTools.remove;
 
 var t = {
   header: require('../templates/header.js'),
-  graph: require('../templates/edutomic-graph.js')
+  inputArea: require('../templates/input-area.js')
 };
 
 var main = function (coreLogic) {
-  append(document.body, t.header(), t.graph(coreLogic));
+  append(document.body, t.header(), t.inputArea(coreLogic));
 };
 
 module.exports = main;
