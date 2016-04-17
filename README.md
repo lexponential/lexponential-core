@@ -1,4 +1,4 @@
-# Edutomic 
+# Lexponential 
 
 Instructions to future Luke:
 - make sure flask and flask_sqlalchemy are installed
