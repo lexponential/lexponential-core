@@ -39,10 +39,12 @@ def get_lexemes (lexeme):
 @app.route('/lexemes/create', methods=['POST'])
 def create_lexeme ():
     payload = request.get_json()
-    print payload # lexemes = payload['lexemes']
     # guard clause to  ensure value is valid
-    lexeme = Lexeme('dog', 'english', 'spanish')
-    db.session.add(lexeme)
+    lexemes = [lex.strip() for lex in payload['lexemes'].split(" ") if lex is not '']
+    if not lexemes[0]:
+        return jsonify(payload)
+    objects = [Lexeme(lexeme, 'english', 'spanish') for lexeme in lexemes]
+    db.session.bulk_save_objects(objects)
     db.session.commit()
     return jsonify(payload)
 
