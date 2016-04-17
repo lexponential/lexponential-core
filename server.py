@@ -21,6 +21,14 @@ class Lexeme(db.Model):
         self.from_language = from_language
         self.to_language = to_language
 
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'lexeme': self.lexeme,
+            'fromLanguage': self.from_language,
+            'toLanguage': self.to_language
+        }
 
 # the base route which renders a template
 @app.route('/')
@@ -28,25 +36,33 @@ def index ():
     return render_template('index.html')
 
 
-@app.route('/lexemes/<lexeme>')
-def get_lexemes (lexeme):
-    # will return a list of all lexemes of a given lexeme
-    lexemes = Lexeme.query.all()
-    return jsonify({'lexemes': []})
+@app.route('/lexemes')
+def get_lexemes ():
+    lexemes = [lexeme.serialize for lexeme in Lexeme.query.all()]
+    return jsonify({'lexemes': lexemes})
+   
+
+@app.route('/lexemes/<lexeme_id>')
+def get_lexeme (lexeme_id):
+    """Return a Lexeme of a given ID or 404"""
+    lexeme = Lexeme.query.get(lexeme_id)
+    if lexeme:
+        return jsonify({'lexeme': lexeme.serialize})
+    # Should actually return a 404 not None
+    return jsonify({'lexeme': None})
 
 
-# create a lexeme
 @app.route('/lexemes/create', methods=['POST'])
 def create_lexeme ():
     payload = request.get_json()
-    # guard clause to  ensure value is valid
     lexemes = [lex.strip() for lex in payload['lexemes'].split(" ") if lex is not '']
     if not lexemes[0]:
-        return jsonify(payload)
+        # Should actually return a 400 or maybe 412
+        return jsonify({'success': False})
     objects = [Lexeme(lexeme, 'english', 'spanish') for lexeme in lexemes]
     db.session.bulk_save_objects(objects)
     db.session.commit()
-    return jsonify(payload)
+    return jsonify({'success': True})
 
 
 if __name__ == '__main__':
