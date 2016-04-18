@@ -1,5 +1,7 @@
 # Lexponential 
 
+Data-Driven Language Learning.
+
 Instructions to future Luke:
 - make sure flask and flask_sqlalchemy are installed
 - in a python interpreter run
