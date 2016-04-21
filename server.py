@@ -40,8 +40,10 @@ def get_lexemes (lexeme):
 def create_lexeme ():
     payload = request.get_json()
     print payload # lexemes = payload['lexemes']
+    print payload['lexemes']
+    user_lexeme = payload['lexemes'] or 'dog'
     # guard clause to  ensure value is valid
-    lexeme = Lexeme('dog', 'english', 'spanish')
+    lexeme = Lexeme(user_lexeme, 'english', 'spanish')
     db.session.add(lexeme)
     db.session.commit()
     return jsonify(payload)
