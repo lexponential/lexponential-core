@@ -1,13 +1,84 @@
-import uuid
-from flask import Flask, jsonify, render_template, request
-from flask_sqlalchemy import SQLAlchemy
+
+import jwt
+import base64
 import os
+
+import uuid
+from flask import Flask, jsonify, render_template, request, _request_ctx_stack
+from flask_sqlalchemy import SQLAlchemy
+
+from functools import wraps
+from werkzeug.local import LocalProxy
+from dotenv import Dotenv
+from flask.ext.cors import cross_origin
+
 
 app = Flask(__name__)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.sqlite')
 db = SQLAlchemy(app)
+
+env = None
+
+try:
+    env = Dotenv('./.env')
+    client_id = env["AUTH0_CLIENT_ID"]
+    client_secret = env["AUTH0_CLIENT_SECRET"]
+except IOError:
+  env = os.environ
+
+
+
+
+# Authentication annotation
+current_user = LocalProxy(lambda: _request_ctx_stack.top.current_user)
+
+# Authentication attribute/annotation
+def authenticate(error):
+  resp = jsonify(error)
+
+  resp.status_code = 401
+
+  return resp
+
+def requires_auth(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    auth = request.headers.get('Authorization', None)
+    if not auth:
+      return authenticate({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'})
+
+    parts = auth.split()
+
+    if parts[0].lower() != 'bearer':
+      return {'code': 'invalid_header', 'description': 'Authorization header must start with Bearer'}
+    elif len(parts) == 1:
+      return {'code': 'invalid_header', 'description': 'Token not found'}
+    elif len(parts) > 2:
+      return {'code': 'invalid_header', 'description': 'Authorization header must be Bearer + \s + token'}
+
+    token = parts[1]
+    try:
+        payload = jwt.decode(
+            token,
+            base64.b64decode('-ZqDCugBJMderO-UiXhSLV1CT3eQLU-_EWo02WAAbKLTUXvsrByKEpmMuLzuCObz'.replace("_","/").replace("-","+")),
+            audience='J0tgrJBTPGNCIG6zVHDIYBTkaemFAkTT'
+        )
+    except jwt.ExpiredSignature:
+        return authenticate({'code': 'token_expired', 'description': 'token is expired'})
+    except jwt.InvalidAudienceError:
+        return authenticate({'code': 'invalid_audience', 'description': 'incorrect audience, expected: J0tgrJBTPGNCIG6zVHDIYBTkaemFAkTT'})
+    except jwt.DecodeError:
+        return authenticate({'code': 'token_invalid_signature', 'description': 'token signature is invalid'})
+
+    _request_ctx_stack.top.current_user = user = payload
+    return f(*args, **kwargs)
+
+  return decorated
+
+
+
 
 
 class Lexeme(db.Model):
@@ -21,32 +92,49 @@ class Lexeme(db.Model):
         self.from_language = from_language
         self.to_language = to_language
 
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'lexeme': self.lexeme,
+            'fromLanguage': self.from_language,
+            'toLanguage': self.to_language
+        }
 
 # the base route which renders a template
 @app.route('/')
 def index ():
     return render_template('index.html')
 
+@app.route('/lexemes')
+@cross_origin(headers=['Content-Type', 'Authorization'])
+@requires_auth
+def get_lexemes ():
+    lexemes = [lexeme.serialize for lexeme in Lexeme.query.all()]
+    return jsonify({'lexemes': lexemes})
 
-@app.route('/lexemes/<lexeme>')
-def get_lexemes (lexeme):
-    # will return a list of all lexemes of a given lexeme
-    lexemes = Lexeme.query.all()
-    return jsonify({'lexemes': []})
+
+@app.route('/lexemes/<lexeme_id>')
+def get_lexeme (lexeme_id):
+    """Return a Lexeme of a given ID or 404"""
+    lexeme = Lexeme.query.get(lexeme_id)
+    if lexeme:
+        return jsonify({'lexeme': lexeme.serialize})
+    # Should actually return a 404 not None
+    return jsonify({'lexeme': None})
 
 
-# create a lexeme
 @app.route('/lexemes/create', methods=['POST'])
 def create_lexeme ():
     payload = request.get_json()
-    print payload # lexemes = payload['lexemes']
-    print payload['lexemes']
-    user_lexeme = payload['lexemes'] or 'dog'
-    # guard clause to  ensure value is valid
-    lexeme = Lexeme(user_lexeme, 'english', 'spanish')
-    db.session.add(lexeme)
+    lexemes = [lex.strip() for lex in payload['lexemes'].split(" ") if lex is not '']
+    if not lexemes[0]:
+        # Should actually return a 400 or maybe 412
+        return jsonify({'success': False})
+    objects = [Lexeme(lexeme, 'english', 'spanish') for lexeme in lexemes]
+    db.session.bulk_save_objects(objects)
     db.session.commit()
-    return jsonify(payload)
+    return jsonify({'success': True})
 
 
 if __name__ == '__main__':

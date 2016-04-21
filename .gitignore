@@ -1,3 +1,5 @@
+.env
 app.sqlite
 roadmap.md
-*.pyc
+build/
+.pyc
