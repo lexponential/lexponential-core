@@ -1,5 +1,5 @@
 flask
 flask-cors
-flask-sqlalchemy
+flask-sqlalchemy>=1.0
 PyJWT
 dotenv
