@@ -11,6 +11,7 @@ from functools import wraps
 from werkzeug.local import LocalProxy
 from dotenv import Dotenv
 from flask.ext.cors import cross_origin
+from collections import Counter
 
 
 app = Flask(__name__)
@@ -101,6 +102,33 @@ class Lexeme(db.Model):
             'toLanguage': self.to_language
         }
 
+
+class User_Lexeme(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lexeme = db.Column(db.Text)
+    from_language = db.Column(db.String(80))
+    to_language = db.Column(db.String(80))
+    lexeme_count = db.Column(db.Integer)
+    success_count = db.Column(db.Integer)
+
+    def __init__(self, lexeme, from_language, to_language, lexeme_count):
+        self.lexeme = lexeme
+        self.from_language = from_language
+        self.to_language = to_language
+        self.lexeme_count = lexeme_count
+        self.success_count = 0
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'lexeme': self.lexeme,
+            'fromLanguage': self.from_language,
+            'toLanguage': self.to_language,
+            'lexemecount': self.lexeme_count,
+            'success_count': self.success_count
+        }
+
 # the base route which renders a template
 @app.route('/')
 def index ():
@@ -134,7 +162,18 @@ def create_lexeme ():
     objects = [Lexeme(lexeme, 'english', 'spanish') for lexeme in lexemes]
     db.session.bulk_save_objects(objects)
     db.session.commit()
+
+
+    counted_lexemes = Counter(lexemes)
+    user_lexemes = [User_Lexeme(lexeme, 'english', 'spanish', counted_lexemes[lexeme]) for lexeme in counted_lexemes]
+
+
+    db.session.bulk_save_objects(user_lexemes)
+    db.session.commit()
+
     return jsonify({'success': True})
+
+
 
 
 if __name__ == '__main__':
