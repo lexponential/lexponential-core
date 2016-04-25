@@ -13,22 +13,37 @@ module.exports = function () {
     lexemes: []
   };
 
-  var lock = new Auth0Lock(creds.auth0.appID, creds.auth0.subdomain);
+  var lock = new Auth0Lock(
+      creds.auth0.appID,
+      creds.auth0.subdomain
+  );
 
   this.login = function () {
     lock.show({ authParams: { scope: 'openid' } });
   };
 
-  this.parseHash = function () {
+  this.logout = function () {
+    localStorage.removeItem('id_token');
+    window.location.href = '/';
+    state.loggedIn = false;
+  };
+
+  this.parseHash = function (success, failure) {
+    
     var hash = lock.parseHash(window.location.hash);
     if (hash) {
       if (hash.error) {
+        failure(hash.error);
         console.log("There was an error logging in", hash.error);
         alert('There was an error: ' + hash.error + '\n' + hash.error_description);
       } else {
         //save the token in the session:
         localStorage.setItem('id_token', hash.id_token);
+        state.loggedIn = true;
+        success();
       }
+    } else {
+      failure();
     }
   };
 
@@ -45,16 +60,16 @@ module.exports = function () {
     }
   };
 
-  this.getLexemes = function (callback) {
+  this.getLexemes = function (success, error) {
     var url = config.baseURL + '/lexemes';
     d3.xhr(url)
       .header("Content-Type", "application/json")
       .header("Authorization", "Bearer " + localStorage.getItem('id_token'))
       .get(function(err, rawData){
-        if (err) console.log(err);
+        if (err) error(err);
         var res = JSON.parse(rawData.responseText);
         state.lexemes = res.lexemes;
-        console.log("got response", state.lexemes);
+        success(res);
       });
   };
 
@@ -69,6 +84,10 @@ module.exports = function () {
         console.log("got response", res);
         state.lexemes.push(lexeme);
       });
+  };
+
+  this.getState = function () {
+    return deepCopy(state);
   };
 
 };
