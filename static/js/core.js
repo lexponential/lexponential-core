@@ -5,15 +5,6 @@ function deepCopy (obj) {
   return JSON.parse(JSON.stringify(obj));
 };
 
-function Node (nodeValue) {
-  this.value = nodeValue;
-};
-
-function Edge (from, to) {
-  this.from = from;
-  this.to = to;
-};
-
 module.exports = function () {
   var state = {
     loggedIn: false,
