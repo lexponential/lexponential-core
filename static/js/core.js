@@ -1,4 +1,5 @@
 var config = require('./config.js');
+var creds = require('./creds.js');
 
 function deepCopy (obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -21,7 +22,7 @@ module.exports = function () {
     lexemes: []
   };
 
-  var lock = new Auth0Lock('J0tgrJBTPGNCIG6zVHDIYBTkaemFAkTT', 'lukedavis.auth0.com');
+  var lock = new Auth0Lock(creds.auth0.appID, creds.auth0.subdomain);
 
   this.login = function () {
     lock.show({ authParams: { scope: 'openid' } });
