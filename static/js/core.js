@@ -15,6 +15,7 @@ function Edge (from, to) {
 
 module.exports = function () {
   var state = {
+    loggedIn: false,
     nodes: [],
     edges: [],
     lexemes: []
@@ -63,34 +64,6 @@ module.exports = function () {
         state.lexemes = res.lexemes;
         console.log("got response", state.lexemes);
       });
-    /*
-    // xhr GET with authorization set to our credentials
-      var req = new XMLHttpRequest();
-      req.onReadyStateChange = success; 
-      req.open('GET', url, true);
-      req.responseType = 'json';
-      req.setRequestHeader(
-          'Authorization',
-          'Bearer ' + localStorage.getItem('id_token')
-          );
-      req.send();    
-
-    function success () {
-      console.log('success!');
-      console.log(arguments);
-      if (req.readyState === 4 && req.status === 200) {
-        var data = JSON.parse(req.responseText);
-        lexemes.concat(data.lexemes);
-        callback();
-      } else {
-        failure();
-      }
-    };
-
-    function failure () {
-      console.log('failure');
-    };
-    */
   };
 
   this.addLexeme = function (lexeme) {
@@ -106,33 +79,4 @@ module.exports = function () {
       });
   };
 
-  this.getNodes = function () {
-    return deepCopy(state.nodes);
-  };
-
-  this.getEdges = function () {
-    return deepCopy(state.edges);
-  };
-
-  this.addNode = function (nodeValue) {
-    var node = new Node(nodeValue);
-    state.nodes.push(node);
-
-    var url = config.baseURL + '/nodes/create';
-    var data = JSON.stringify({value: node.value});
-    d3.xhr(url)
-      .header("Content-Type", "application/json")
-      .post(data, function(err, rawData){
-        if (err) console.log(err);
-        console.log("got response", rawData);
-      });
-
-    return node;
-  };
-
-  this.addEdge = function (fromNodeID, toNodeID) {
-    var edge = new Edge(from, to);
-    state.edges.push(edge);
-    return edge;
-  };
 };
