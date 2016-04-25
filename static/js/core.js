@@ -33,30 +33,34 @@ module.exports = function () {
     var hash = lock.parseHash(window.location.hash);
     if (hash) {
       if (hash.error) {
-        failure(hash.error);
+        if (failure) failure(hash.error);
         console.log("There was an error logging in", hash.error);
         alert('There was an error: ' + hash.error + '\n' + hash.error_description);
       } else {
         //save the token in the session:
         localStorage.setItem('id_token', hash.id_token);
         state.loggedIn = true;
-        success();
+        if (success) success();
       }
     } else {
-      failure();
+      if (failure) failure();
     }
   };
 
-  this.getUser = function () {
+  this.getUser = function (success, failure) {
     //retrieve the profile:
     var id_token = localStorage.getItem('id_token');
     if (id_token) {
       lock.getProfile(id_token, function (err, profile) {
         if (err) {
+          if (failure) failure(err);
           return alert('There was an error geting the profile: ' + err.message);
         }
         console.log(profile);
+        if (success) success(profile)
       });
+    } else {
+      if (failure) failure();
     }
   };
 
