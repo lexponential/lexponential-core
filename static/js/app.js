@@ -34,7 +34,10 @@ var app = {
       console.log('app.init');
       coreLogic.parseHash(
           routes.main,
-          routes.login);
+          function (err) {
+            if (err) console.log(err);
+            coreLogic.getUser(routes.main, routes.login);
+      });
     },
 
     coreLogic: coreLogic
