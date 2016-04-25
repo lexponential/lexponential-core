@@ -10,7 +10,7 @@ var t = {
 };
 
 
-module.exports = function (coreLogic) {
-    return t.button('Login', coreLogic.login);
+module.exports = function (onclickCB) {
+    return t.button('Login', onclickCB);
 };
 
