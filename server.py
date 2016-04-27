@@ -1,17 +1,15 @@
-
 import jwt
 import base64
 import os
-
 import uuid
+from collections import Counter
+from functools import wraps
+
 from flask import Flask, jsonify, render_template, request, _request_ctx_stack
 from flask_sqlalchemy import SQLAlchemy
-
-from functools import wraps
+from flask.ext.cors import cross_origin
 from werkzeug.local import LocalProxy
 from dotenv import Dotenv
-from flask.ext.cors import cross_origin
-from collections import Counter
 
 
 app = Flask(__name__)
@@ -81,6 +79,20 @@ def requires_auth(f):
 
 
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    auth0_id = db.Column(db.Integer)
+
+    def __init__(self, auth0_id):
+        self.auth0_id = auth0_id
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'auth0_id': self.auth0_id
+        }
+
 
 class Lexeme(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -110,13 +122,15 @@ class User_Lexeme(db.Model):
     to_language = db.Column(db.String(80))
     lexeme_count = db.Column(db.Integer)
     success_count = db.Column(db.Integer)
+    owner = db.Column(db.Integer)
 
-    def __init__(self, lexeme, from_language, to_language, lexeme_count):
+    def __init__(self, lexeme, from_language, to_language, lexeme_count, owner):
         self.lexeme = lexeme
         self.from_language = from_language
         self.to_language = to_language
         self.lexeme_count = lexeme_count
         self.success_count = 0
+        self.owner = owner
 
     @property
     def serialize(self):
@@ -143,6 +157,8 @@ def get_lexemes ():
 
 
 @app.route('/lexemes/<lexeme_id>')
+@cross_origin(headers=['Content-Type', 'Authorization'])
+@requires_auth
 def get_lexeme (lexeme_id):
     """Return a Lexeme of a given ID or 404"""
     lexeme = Lexeme.query.get(lexeme_id)
@@ -153,6 +169,8 @@ def get_lexeme (lexeme_id):
 
 
 @app.route('/lexemes/create', methods=['POST'])
+@cross_origin(headers=['Content-Type', 'Authorization'])
+@requires_auth
 def create_lexeme ():
     payload = request.get_json()
     lexemes = [lex.strip() for lex in payload['lexemes'].split(" ") if lex is not '']
@@ -162,18 +180,21 @@ def create_lexeme ():
     objects = [Lexeme(lexeme, 'english', 'spanish') for lexeme in lexemes]
     db.session.bulk_save_objects(objects)
     db.session.commit()
+    id_service, user_id = current_user['sub'].split('|')
 
+    owner = User.query.filter_by(auth0_id=user_id).first()
+    if owner is None:
+        owner = User(user_id)
+        db.session.add(owner)
+        db.session.commit()
 
     counted_lexemes = Counter(lexemes)
-    user_lexemes = [User_Lexeme(lexeme, 'english', 'spanish', counted_lexemes[lexeme]) for lexeme in counted_lexemes]
-
+    user_lexemes = [User_Lexeme(lexeme, 'english', 'spanish', counted_lexemes[lexeme], user_id) for lexeme in counted_lexemes]
 
     db.session.bulk_save_objects(user_lexemes)
     db.session.commit()
 
     return jsonify({'success': True})
-
-
 
 
 if __name__ == '__main__':
