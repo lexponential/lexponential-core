@@ -66,9 +66,10 @@ module.exports = function () {
 
   this.getLexemes = function (success, error) {
     var url = config.baseURL + '/lexemes';
+    var token = localStorage.getItem('id_token');
     d3.xhr(url)
       .header("Content-Type", "application/json")
-      .header("Authorization", "Bearer " + localStorage.getItem('id_token'))
+      .header("Authorization", "Bearer " + token)
       .get(function(err, rawData){
         if (err) error(err);
         var res = JSON.parse(rawData.responseText);
@@ -79,9 +80,11 @@ module.exports = function () {
 
   this.addLexeme = function (lexeme) {
     url = config.baseURL + '/lexemes/create';
+    var token = localStorage.getItem('id_token');
     var data = JSON.stringify({lexemes: lexeme});
     d3.xhr(url)
       .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer " + token)
       .post(data, function(err, rawData){
         if (err) console.log(err);
         var res = rawData;
