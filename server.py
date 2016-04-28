@@ -80,6 +80,7 @@ def requires_auth(f):
 
 
 class User(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     auth0_id = db.Column(db.Integer)
 
@@ -95,37 +96,44 @@ class User(db.Model):
 
 
 class Lexeme(db.Model):
+    __tablename__ = 'lexicon'
     id = db.Column(db.Integer, primary_key=True)
     lexeme = db.Column(db.Text)
     from_language = db.Column(db.String(80))
     to_language = db.Column(db.String(80))
+    translation = db.Column(db.Text)
 
     def __init__(self, lexeme, from_language, to_language):
         self.lexeme = lexeme
         self.from_language = from_language
         self.to_language = to_language
+        self.translation = 'Morgan is Amazing!'
 
     @property
     def serialize(self):
         return {
             'id': self.id,
             'lexeme': self.lexeme,
+            'translation': self.translation,
             'fromLanguage': self.from_language,
             'toLanguage': self.to_language
         }
 
 
 class User_Lexeme(db.Model):
+    __tablename__ = 'user_lexicon'
     id = db.Column(db.Integer, primary_key=True)
     lexeme = db.Column(db.Text)
     from_language = db.Column(db.String(80))
     to_language = db.Column(db.String(80))
+    translation = db.Column(db.Text)
     lexeme_count = db.Column(db.Integer)
     success_count = db.Column(db.Integer)
     owner = db.Column(db.Integer)
 
     def __init__(self, lexeme, from_language, to_language, lexeme_count, owner):
         self.lexeme = lexeme
+        self.translation = 'Morgan is Amazing!'
         self.from_language = from_language
         self.to_language = to_language
         self.lexeme_count = lexeme_count
@@ -137,6 +145,7 @@ class User_Lexeme(db.Model):
         return {
             'id': self.id,
             'lexeme': self.lexeme,
+            'translation': self.translation,
             'fromLanguage': self.from_language,
             'toLanguage': self.to_language,
             'lexemecount': self.lexeme_count,
