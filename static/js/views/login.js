@@ -4,14 +4,14 @@ var remove = domTools.remove;
 
 var t = {
   header: require('../templates/header.js'),
-  loginButton: require('../templates/login-button.js')
+  loginBanner: require('../templates/login-banner.js')
 };
 
 var main = function (coreLogic) {
   append(
       document.body,
       t.header(),
-      t.loginButton(coreLogic.login)
+      t.loginBanner(coreLogic.login)
   );
 };
 

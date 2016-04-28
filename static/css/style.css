@@ -1,18 +1,54 @@
+html {
+    height: 100%;
+}
+
 body {
     font-family: sans-serif;
     padding: 0;
     margin: 0;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#67ebff+0,ff00a1+100 */
+    background: #67ebff; /* Old browsers */
+    background: -moz-linear-gradient(top,  #67ebff 0%, #ff00a1 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #67ebff 0%,#ff00a1 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #67ebff 0%,#ff00a1 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#67ebff', endColorstr='#ff00a1',GradientType=0 ); /* IE6-9 */
 }
 
 .header {
-    background: #333;
     text-align: right;
     padding: 20px;
+    margin: 0;
+    font-size: 3em;
+    color: #000;
+}
+
+.logout-banner, .login-banner {
+    background: rgba(0, 0, 0, 0.8);
+    text-align: right;
+    padding: 4px 20px 4px 20px;
     margin: 0;
     color: #fff;
 }
 
+.logout-banner span, .login-banner span {
+    cursor: pointer;
+}
+
 #chart {
     margin: 20px;
+}
+
+.input-area {
+    width: 300px;
+    margin: 10px auto 10px auto;
+    border: 4px solid #fff;
+    font-size: 2em;
+}
+
+.input-area button {
+    cursor: pointer;
 }
 
