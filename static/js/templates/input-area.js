@@ -21,7 +21,11 @@ module.exports = function (coreLogic) {
     var lexemeInput = t.lexemeInput();
     var saveButton = t.button('Save', save);
 
-    append(inputArea, lexemeInput, saveButton);
+    append(
+        inputArea, 
+        lexemeInput,
+        saveButton
+    );
     return inputArea;
 
     function save () {
