@@ -4,7 +4,9 @@ var append = require('../dom.js').append;
 
 var t = {
     lexemeInput: function () {
-        return  el('input', 'lexeme-input');
+        var i = el('textarea', 'lexeme-input');
+        i.placeholder = 'paste some text you\'d like to learn to translate here...';
+        return i;
     },
 
     button: function (innerText, onclick) {
