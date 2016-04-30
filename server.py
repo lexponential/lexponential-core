@@ -14,6 +14,8 @@ from werkzeug.local import LocalProxy
 from dotenv import Dotenv
 from auth import authenticate, requires_auth
 
+from translation.random_translation import translate
+
 app = Flask(__name__)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -62,7 +64,7 @@ class Lexeme(db.Model):
         self.lexeme = lexeme
         self.from_language = from_language
         self.to_language = to_language
-        self.translation = 'Morgan is Amazing!'
+        self.translation = translate(lexeme, from_language, to_language)
 
     @property
     def serialize(self):
@@ -128,7 +130,7 @@ def index ():
 @requires_auth
 def get_lexemes ():
     id_service, user_id = current_user['sub'].split('|')
-    lexemes = [lexeme.serialize for lexeme in User_Lexeme.query.filter_by(owner=user_id).all()]
+    lexemes = [lexeme.serialize for lexeme in User_Lexeme.query.filter_by(owner=user_id).order_by(User_Lexeme.lexeme_count.desc()).all()]
     return jsonify({'lexemes': lexemes})
 
 

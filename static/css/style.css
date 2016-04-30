@@ -35,9 +35,22 @@ body {
     color: #fff;
 }
 
-.logout-banner span, .login-banner span, .nav-banner span {
+.nav-banner {
+    background: #222;
+    text-align: center;
+    padding: 4px 20px 4px 20px;
+    margin: 0;
+    color: #fff;
+}
+
+.logout-banner span, .login-banner span {
     cursor: pointer;
     margin: 0 10px 0 10px;
+}
+
+.nav-banner span {
+    cursor: pointer;
+    margin: 0 20px 0 20px;
 }
 
 #chart {
