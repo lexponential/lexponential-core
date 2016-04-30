@@ -38,11 +38,12 @@ routes.tableView = function () {
 
 var app = {
     init: function () {
-      coreLogic.parseHash(
-          routes.main,
+        var defaultRoute = routes.tableView;
+        coreLogic.parseHash(
+          defaultRoute,
           function (err) {
             if (err) console.log(err);
-            coreLogic.getUser(routes.main, routes.login);
+            coreLogic.getUser(defaultRoute, routes.login);
       });
     },
 
