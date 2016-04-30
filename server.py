@@ -87,9 +87,11 @@ class User_Lexeme(db.Model):
     owner = db.Column(db.Integer)
     created_at = db.Column(db.DateTime)
     active_after = db.Column(db.DateTime)
+    last_success = db.Column(db.DateTime)
 
 
     def __init__(self, lexeme, from_language, to_language, lexeme_count, owner):
+        utc_now = datetime.utcnow()
         self.lexeme = lexeme
         self.translation = 'Morgan is Amazing!'
         self.from_language = from_language
@@ -97,8 +99,9 @@ class User_Lexeme(db.Model):
         self.lexeme_count = lexeme_count
         self.success_count = 0
         self.owner = owner
-        self.created_at = datetime.utcnow()
-        self.active_after = datetime.utcnow()
+        self.created_at = utc_now
+        self.last_success = utc_now
+        self.active_after = utc_now
 
     @property
     def serialize(self):
@@ -111,6 +114,7 @@ class User_Lexeme(db.Model):
             'lexemecount': self.lexeme_count,
             'success_count': self.success_count,
             'created_at': self.created_at,
+            'last_success': self.last_success,
             'active_after': self.active_after
         }
 
