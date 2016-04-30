@@ -38,7 +38,7 @@ routes.tableView = function () {
 
 var app = {
     init: function () {
-        var defaultRoute = routes.tableView;
+        var defaultRoute = routes.main;
         coreLogic.parseHash(
           defaultRoute,
           function (err) {

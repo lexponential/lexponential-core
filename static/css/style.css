@@ -27,7 +27,7 @@ body {
     font-weight: bold;
 }
 
-.logout-banner, .login-banner {
+.logout-banner, .login-banner, .nav-banner {
     background: #222;
     text-align: right;
     padding: 4px 20px 4px 20px;
@@ -35,8 +35,9 @@ body {
     color: #fff;
 }
 
-.logout-banner span, .login-banner span {
+.logout-banner span, .login-banner span, .nav-banner span {
     cursor: pointer;
+    margin: 0 10px 0 10px;
 }
 
 #chart {
