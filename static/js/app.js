@@ -7,6 +7,7 @@ var v = {
     login: require('./views/login.js'),
     main: require('./views/main.js'),
     table: require('./views/table-view.js'),
+    barChart: require('./views/barchart-view.js'),
     clear: function () {document.body.innerHTML = '';}
 };
 
@@ -34,6 +35,12 @@ routes.tableView = function () {
   v.clear();
   console.log('tableView');
   v.table(coreLogic, routes);
+};
+
+routes.barChart = function () {
+  v.clear();
+  console.log('barChart');
+  v.barChart(coreLogic, routes);
 };
 
 var app = {

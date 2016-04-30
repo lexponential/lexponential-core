@@ -24,7 +24,13 @@ module.exports = function (coreLogic, routes) {
     routes.main();
   });
 
-  append(banner, enterText, table, logout);
+  var barChart = el('span');
+  barChart.innerText = 'bar chart';
+  barChart.addEventListener('click', function () {
+    routes.barChart();
+  });
+
+  append(banner, enterText, barChart, table, logout);
   
   return banner;
 };
