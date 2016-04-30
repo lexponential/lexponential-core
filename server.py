@@ -46,7 +46,7 @@ class User(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'auth0_id': self.auth0_id
+            'auth0Id': self.auth0_id
         }
 
 
@@ -111,11 +111,11 @@ class User_Lexeme(db.Model):
             'translation': self.translation,
             'fromLanguage': self.from_language,
             'toLanguage': self.to_language,
-            'lexemecount': self.lexeme_count,
-            'success_count': self.success_count,
-            'created_at': self.created_at,
-            'last_success': self.last_success,
-            'active_after': self.active_after
+            'lexemeCount': self.lexeme_count,
+            'successCount': self.success_count,
+            'createdAt': self.created_at,
+            'lastSuccess': self.last_success,
+            'activeAfter': self.active_after
         }
 
 # the base route which renders a template
@@ -127,7 +127,8 @@ def index ():
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def get_lexemes ():
-    lexemes = [lexeme.serialize for lexeme in Lexeme.query.all()]
+    id_service, user_id = current_user['sub'].split('|')
+    lexemes = [lexeme.serialize for lexeme in User_Lexeme.query.filter_by(owner=user_id).all()]
     return jsonify({'lexemes': lexemes})
 
 
