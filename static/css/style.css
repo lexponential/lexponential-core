@@ -22,11 +22,13 @@ body {
     padding: 20px;
     margin: 0;
     font-size: 3em;
-    color: #000;
+    color: #222;
+    margin-bottom: -31px;
+    font-weight: bold;
 }
 
 .logout-banner, .login-banner {
-    background: rgba(0, 0, 0, 0.8);
+    background: #222;
     text-align: right;
     padding: 4px 20px 4px 20px;
     margin: 0;

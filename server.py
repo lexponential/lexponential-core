@@ -2,7 +2,9 @@ import jwt
 import base64
 import os
 import uuid
+
 from collections import Counter
+from datetime import datetime
 from functools import wraps
 
 from flask import Flask, jsonify, render_template, request, _request_ctx_stack
@@ -83,6 +85,9 @@ class User_Lexeme(db.Model):
     lexeme_count = db.Column(db.Integer)
     success_count = db.Column(db.Integer)
     owner = db.Column(db.Integer)
+    created_at = db.Column(db.DateTime)
+    active_after = db.Column(db.DateTime)
+
 
     def __init__(self, lexeme, from_language, to_language, lexeme_count, owner):
         self.lexeme = lexeme
@@ -92,6 +97,8 @@ class User_Lexeme(db.Model):
         self.lexeme_count = lexeme_count
         self.success_count = 0
         self.owner = owner
+        self.created_at = datetime.utcnow()
+        self.active_after = datetime.utcnow()
 
     @property
     def serialize(self):
@@ -102,7 +109,9 @@ class User_Lexeme(db.Model):
             'fromLanguage': self.from_language,
             'toLanguage': self.to_language,
             'lexemecount': self.lexeme_count,
-            'success_count': self.success_count
+            'success_count': self.success_count,
+            'created_at': self.created_at,
+            'active_after': self.active_after
         }
 
 # the base route which renders a template
