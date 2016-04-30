@@ -6,6 +6,7 @@ window.coreLogic = coreLogic;
 var v = {
     login: require('./views/login.js'),
     main: require('./views/main.js'),
+    table: require('./views/table-view.js'),
     clear: function () {document.body.innerHTML = '';}
 };
 
@@ -24,14 +25,19 @@ routes.login = function () {
 };
 
 routes.logout = function () {
-  v.clear()
+  v.clear();
   coreLogic.logout();
   routes.login();
 };
 
+routes.tableView = function () {
+  v.clear();
+  console.log('tableView');
+  v.table(coreLogic, routes);
+};
+
 var app = {
     init: function () {
-      console.log('app.init');
       coreLogic.parseHash(
           routes.main,
           function (err) {
