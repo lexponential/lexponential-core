@@ -119,16 +119,16 @@ class User_Lexeme(db.Model):
     @property
     def serialize(self):
         return {
-            'id': self.id,
+            #'id': self.id,
             'lexeme': self.lexeme,
-            'translation': self.translation,
+            #'translation': self.translation,
             'fromLanguage': self.from_language,
             'toLanguage': self.to_language,
             'lexemeCount': self.lexeme_count,
             'successCount': self.success_count,
-            'createdAt': self.created_at,
-            'lastSuccess': self.last_success,
-            'activeAfter': self.active_after
+            #'createdAt': self.created_at,
+            #'lastSuccess': self.last_success,
+            #'activeAfter': self.active_after
         }
 
 # the base route which renders a template
@@ -161,24 +161,38 @@ def get_lexeme (lexeme_id):
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def create_lexeme ():
-    owner = verify_or_create_user()
+    user = verify_or_create_user()
     payload = request.get_json()
     lexemes = [lex.strip() for lex in payload['lexemes'].split(" ") if lex is not '']
     counted_lexemes = Counter(lexemes)
+    to_language = 'english'
+    from_language = 'spanish'
 
     if not lexemes[0]:
         # Should actually return a 400 or maybe 412
         return jsonify({'success': False})
 
-    objects = [Lexeme(lexeme, 'english', 'spanish') for lexeme in counted_lexemes]
-    db.session.bulk_save_objects(objects)
-    db.session.commit()
+    for lex in counted_lexemes:
+        print(lex)
+        prior = Lexeme.query.filter_by(lexeme=lex, from_language=from_language, to_language=to_language).first()
+        if not prior:
+            new_lexeme = Lexeme(lex, from_language, to_language)
+            db.session.add(new_lexeme)
+            db.session.commit()
 
-    #user_lexemes = [User_Lexeme(lexeme, 'english', 'spanish', 'word', counted_lexemes[lexeme], user_id) for lexeme in counted_lexemes]
-    user_lexemes = [User_Lexeme(lex.lexeme, lex.to_language, lex.from_language, lex.translation, counted_lexemes[lex.lexeme], owner.id) for lex in objects]
+    user_lexemes = [User_Lexeme(lex, to_language, from_language, None, counted_lexemes[lex], user.id) for lex in counted_lexemes]
 
-    db.session.bulk_save_objects(user_lexemes)
-    db.session.commit()
+    # this is about the worst way imaginable to do this, but it'll work for the time being
+    # do not deploy to prod before rewriting this db interaction!
+    for lex in user_lexemes:
+        prior = User_Lexeme.query.filter_by(lexeme=lex.lexeme, owner=user.id, from_language=lex.from_language, to_language=lex.to_language).first()
+        if not prior:
+            # we should actually pull the lexeme table query into this conditional branch
+            db.session.add(lex)
+        else:
+            prior.lexeme_count = prior.lexeme_count + lex.lexeme_count
+
+        db.session.commit()
 
     return jsonify({'success': True})
 
