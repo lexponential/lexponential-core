@@ -21,20 +21,23 @@ module.exports = function (getLexemes) {
 
         c3.generate({
             bindto: chart,
-data: {
-    type: 'bar',
-    json: response.lexemes,
-    keys: {
-      x: 'lexeme', // it's possible to specify 'x' when category axis
-      value: ['lexemeCount'],
-    }
-  },
-  axis: {
-    x: {
-      type: 'category'
-    }
-  }
-        });
+            data: {
+                type: 'bar',
+                json: response.lexemes,
+                keys: {
+                    x: 'lexeme', // it's possible to specify 'x' when category axis
+                    value: ['lexemeCount'],
+                },
+                colors: {
+                    'lexemeCount': '#ffffff'
+                }
+            },
+            axis: {
+                x: {
+                    type: 'category'
+                }
+            }
+        }).legend.hide('lexemeCount');
 
     };
 
