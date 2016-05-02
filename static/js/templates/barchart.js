@@ -34,7 +34,8 @@ module.exports = function (getLexemes) {
             },
             axis: {
                 x: {
-                    type: 'category'
+                    type: 'category',
+                    show: false
                 }
             }
         }).legend.hide('lexemeCount');

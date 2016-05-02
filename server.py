@@ -163,7 +163,7 @@ def get_lexeme (lexeme_id):
 def create_lexeme ():
     user = verify_or_create_user()
     payload = request.get_json()
-    lexemes = [lex.strip() for lex in payload['lexemes'].split(" ") if lex is not '']
+    lexemes = [lex.strip().lower() for lex in payload['lexemes'].replace('.', '').split(" ") if lex is not '']
     counted_lexemes = Counter(lexemes)
     to_language = 'english'
     from_language = 'spanish'
@@ -173,7 +173,6 @@ def create_lexeme ():
         return jsonify({'success': False})
 
     for lex in counted_lexemes:
-        print(lex)
         prior = Lexeme.query.filter_by(lexeme=lex, from_language=from_language, to_language=to_language).first()
         if not prior:
             new_lexeme = Lexeme(lex, from_language, to_language)
