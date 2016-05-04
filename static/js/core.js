@@ -64,6 +64,21 @@ module.exports = function () {
     }
   };
 
+  this.getFlashcards = function (success, error) {
+    var url = config.baseURL + '/flashcards';
+    var token = localStorage.getItem('id_token');
+    d3.xhr(url)
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer " + token)
+      .get(function(err, rawData){
+        if (err) error(err);
+        var res = JSON.parse(rawData.responseText);
+        state.lexemes = res.flashcards;
+        success(res);
+      });
+  };
+
+
   this.getLexemes = function (success, error) {
     var url = config.baseURL + '/lexemes';
     var token = localStorage.getItem('id_token');

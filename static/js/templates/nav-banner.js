@@ -30,7 +30,13 @@ module.exports = function (coreLogic, routes) {
     routes.barChart();
   });
 
-  append(banner, enterText, barChart, table, logout);
+  var flashcards = el('span');
+  flashcards.innerText = 'flashcards';
+  flashcards.addEventListener('click', function () {
+    routes.flashcards();
+  });
+
+  append(banner, enterText, flashcards, barChart, table, logout);
   
   return banner;
 };

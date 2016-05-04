@@ -8,6 +8,7 @@ var v = {
     main: require('./views/main.js'),
     table: require('./views/table-view.js'),
     barChart: require('./views/barchart-view.js'),
+    flashcards: require('./views/flashcards.js'),
     clear: function () {document.body.innerHTML = '';}
 };
 
@@ -41,6 +42,12 @@ routes.barChart = function () {
   v.clear();
   console.log('barChart');
   v.barChart(coreLogic, routes);
+};
+
+routes.flashcards = function () {
+  v.clear();
+  console.log('flashcards');
+  v.flashcards(coreLogic, routes);
 };
 
 var app = {
