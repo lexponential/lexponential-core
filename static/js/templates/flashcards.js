@@ -2,18 +2,18 @@ var domTools = require('../dom.js');
 var el = domTools.el;
 var append = domTools.append;
 
-module.exports = function (getLexemes) {
-    var container = el('div', 'lexeme-table-container');
+module.exports = function (coreLogic, routes) {
+    var container = el('div', 'flashcards-container');
     var chart = el('div');
     
     append(container, chart);
 
-    getLexemes(success, failure);
+    coreLogic.getFlashcards(success, failure);
 
     return container;
 
     function success (response) {
-        var lexemeCounts = response.lexemes.map(function (lex) {
+        var lexemeCounts = response.flashcards.map(function (lex) {
             return lex.lexemeCount;
         });
 
@@ -21,7 +21,7 @@ module.exports = function (getLexemes) {
             bindto: chart,
             data: {
                 type: 'bar',
-                json: response.lexemes,
+                json: response.flashcards,
                 keys: {
                     x: 'lexeme', // it's possible to specify 'x' when category axis
                     value: ['lexemeCount'],

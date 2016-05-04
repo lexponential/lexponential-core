@@ -136,6 +136,16 @@ class User_Lexeme(db.Model):
 def index ():
     return render_template('index.html')
 
+@app.route('/flashcards')
+@cross_origin(headers=['Content-Type', 'Authorization'])
+@requires_auth
+def get_flashcards ():
+    user = verify_or_create_user()
+    now = datetime.utcnow()
+    flashcards = [lexeme.serialize for lexeme in User_Lexeme.query.filter(User_Lexeme.owner==user.id).filter(User_Lexeme.active_after<=now).order_by(User_Lexeme.lexeme_count.desc()).limit(3)]
+    return jsonify({'flashcards': flashcards})
+
+
 @app.route('/lexemes')
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
