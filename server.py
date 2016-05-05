@@ -119,7 +119,7 @@ class User_Lexeme(db.Model):
     @property
     def serialize(self):
         return {
-            #'id': self.id,
+            'id': self.id,
             'lexeme': self.lexeme,
             'translation': self.translation,
             'fromLanguage': self.from_language,
@@ -164,7 +164,7 @@ def get_flashcards ():
 def verify_flashcards ():
     user = verify_or_create_user()
     payload = request.get_json()
-    lexeme_ids = [lexeme.id for lexeme in payload.lexemes]
+    lexeme_ids = [lexeme['id'] for lexeme in payload['lexemes']]
     for id in lexeme_ids:
         User_Lexeme \
             .query \
