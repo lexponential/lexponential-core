@@ -108,6 +108,21 @@ module.exports = function () {
       });
   };
 
+
+  this.verifyFlashcards = function (lexemes) {
+    url = config.baseURL + '/flashcards';
+    var token = localStorage.getItem('id_token');
+    var data = JSON.stringify({lexemes: lexemes});
+    d3.xhr(url)
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer " + token)
+      .post(data, function(err, rawData){
+        if (err) console.log(err);
+        var res = rawData;
+        console.log("got response", res);
+      });
+  };
+
   this.getState = function () {
     return deepCopy(state);
   };

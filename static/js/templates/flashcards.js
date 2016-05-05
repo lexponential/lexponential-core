@@ -70,6 +70,7 @@ module.exports = function (coreLogic, routes) {
             container.innerHTML = '';
             if (flashcardsData.length < 1) {
                 container.innerText = 'You Win!';
+                coreLogic.verifyFlashcards(response.flashcards);
                 // fire a method from coreLogic to send verification of the cards to the server
                 // which on success would retrieve another deck
             } else {
