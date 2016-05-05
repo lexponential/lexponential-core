@@ -121,7 +121,7 @@ class User_Lexeme(db.Model):
         return {
             #'id': self.id,
             'lexeme': self.lexeme,
-            #'translation': self.translation,
+            'translation': self.translation,
             'fromLanguage': self.from_language,
             'toLanguage': self.to_language,
             'lexemeCount': self.lexeme_count,
@@ -136,13 +136,42 @@ class User_Lexeme(db.Model):
 def index ():
     return render_template('index.html')
 
-@app.route('/flashcards')
+
+def flashcard_deck (user):
+    now = datetime.utcnow()
+    deck_size = 10
+    lexemes = User_Lexeme \
+                .query \
+                .filter(User_Lexeme.owner==user.id) \
+                .filter(User_Lexeme.active_after<=now) \
+                .order_by(User_Lexeme.lexeme_count.desc()) \
+                .limit(deck_size)
+    return [lexeme.serialize for lexeme in lexemes]
+
+
+@app.route('/flashcards', methods=['GET'])
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def get_flashcards ():
     user = verify_or_create_user()
-    now = datetime.utcnow()
-    flashcards = [lexeme.serialize for lexeme in User_Lexeme.query.filter(User_Lexeme.owner==user.id).filter(User_Lexeme.active_after<=now).order_by(User_Lexeme.lexeme_count.desc()).limit(3)]
+    flashcards = flashcard_deck(user)
+    return jsonify({'flashcards': flashcards})
+
+
+@app.route('/flashcards', methods=['POST'])
+@cross_origin(headers=['Content-Type', 'Authorization'])
+@requires_auth
+def verify_flashcards ():
+    user = verify_or_create_user()
+    payload = request.get_json()
+    lexeme_ids = [lexeme.id for lexeme in payload.lexemes]
+    for id in lexeme_ids:
+        User_Lexeme \
+            .query \
+            .filter(User_Lexeme.id==id) \
+            .update({"success_count": User_Lexeme.success_count + 1}, synchronize_session=False)
+        db.session.commit()
+    flashcards = flashcard_deck(user)
     return jsonify({'flashcards': flashcards})
 
 
@@ -189,7 +218,7 @@ def create_lexeme ():
             db.session.add(new_lexeme)
             db.session.commit()
 
-    user_lexemes = [User_Lexeme(lex, to_language, from_language, None, counted_lexemes[lex], user.id) for lex in counted_lexemes]
+    user_lexemes = [User_Lexeme(lex, to_language, from_language, translate(lex, from_language, to_language), counted_lexemes[lex], user.id) for lex in counted_lexemes]
 
     # this is about the worst way imaginable to do this, but it'll work for the time being
     # do not deploy to prod before rewriting this db interaction!
