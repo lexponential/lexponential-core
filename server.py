@@ -4,7 +4,7 @@ import os
 import uuid
 
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
 
 from flask import Flask, jsonify, render_template, request, _request_ctx_stack
@@ -166,10 +166,13 @@ def verify_flashcards ():
     payload = request.get_json()
     lexeme_ids = [lexeme['id'] for lexeme in payload['lexemes']]
     for id in lexeme_ids:
+        lexeme = User_Lexeme.query.filter(User_Lexeme.id==id).first()
+        print(lexeme.active_after)
+        print(lexeme.success_count)
         User_Lexeme \
             .query \
             .filter(User_Lexeme.id==id) \
-            .update({"success_count": User_Lexeme.success_count + 1}, synchronize_session=False)
+            .update({"success_count": User_Lexeme.success_count + 1, "active_after": lexeme.active_after + timedelta(minutes=5**lexeme.success_count + 1)}, synchronize_session=False)
         db.session.commit()
     flashcards = flashcard_deck(user)
     return jsonify({'flashcards': flashcards})
