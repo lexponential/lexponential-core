@@ -32,9 +32,10 @@ module.exports = function (getLexemes) {
                 keys: {
                     x: 'lexeme', // it's possible to specify 'x' when category axis
                     value: ['lexemeCount'],
-                }
+                },
+                color: function (c, d) {return pattern[d.index];}
             },
-            color: {pattern: pattern},
+            //color: {pattern: pattern},
             axis: {
                 x: {
                     type: 'category',
