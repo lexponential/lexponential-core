@@ -1,3 +1,5 @@
+var _ = require('../underscore.js');
+
 var domTools = require('../dom.js');
 var el = domTools.el;
 var append = domTools.append;
@@ -60,6 +62,8 @@ module.exports = function (coreLogic, routes) {
             flashcardData = {lexeme: lex.lexeme, correctTranslations: [lex.translation], incorrectTranslations: []};
             flashcardsData.push(flashcardData);
         };
+
+        flashcardsData = _.shuffle(flashcardsData);
         
         next();
 
