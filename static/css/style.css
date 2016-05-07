@@ -76,3 +76,18 @@ body {
     background: #ff00f2; /* Old browsers */
 }
 
+.flashcards-container {
+    min-width: 300px;
+    max-width: 50%;
+    margin: 20px auto 10px auto;
+    padding: 20px;
+    font-size: 2em;
+    background: #fff;
+    text-align: center;
+}
+
+.flashcard-answer {
+    border: 1px solid #333;
+    cursor: pointer;
+    margin-top: 20px;
+}
