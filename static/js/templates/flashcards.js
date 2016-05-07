@@ -3,6 +3,15 @@ var el = domTools.el;
 var append = domTools.append;
 
 
+var t = {
+    button: function (innerText, onClick) {
+        var b = el('button');
+        b.innerText = innerText;
+        b.addEventListener('click', onClick);
+        return b;
+    }
+};
+
 function Flashcard (flashcardData, correct, incorrect) {
     var flashcard = el('div', 'flashcard')
         flashcard.innerText = flashcardData.lexeme;
@@ -43,7 +52,6 @@ module.exports = function (coreLogic, routes) {
 
     function success (response) {
         // make 3x the number of lexemes you get from the back-end
-        console.log(response);
         var flashcardData, i, lex;
         var flashcardsData = [];
 
@@ -73,6 +81,7 @@ module.exports = function (coreLogic, routes) {
                 coreLogic.verifyFlashcards(response.flashcards);
                 // fire a method from coreLogic to send verification of the cards to the server
                 // which on success would retrieve another deck
+                append(container, t.button('More!', routes.flashcards));
             } else {
                 append(container, Flashcard(flashcardsData[0], correct, incorrect));
             }
