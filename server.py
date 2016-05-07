@@ -128,7 +128,7 @@ class User_Lexeme(db.Model):
             'successCount': self.success_count,
             #'createdAt': self.created_at,
             #'lastSuccess': self.last_success,
-            #'activeAfter': self.active_after
+            'activeAfter': self.active_after
         }
 
 # the base route which renders a template
