@@ -5,8 +5,9 @@ var append = domTools.append;
 var t = {
     lexemeFrequencyBarChart: function (target, data) {
         var now = new moment.utc();
+        var dateFormat = 'ddd, DD MMM YYYY HH:mm:ss Z';
         var barChartColorSequence = data.map(function (lex) {
-            return now.isAfter(moment.utc(lex.activeAfter)) ? '#ff0000' : '#000000';
+            return now.isAfter(moment.utc(lex.activeAfter, dateFormat)) ? '#ff0000' : '#000000';
         });
         
         c3.generate({
