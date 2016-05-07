@@ -2,7 +2,33 @@ var domTools = require('../dom.js');
 var el = domTools.el;
 var append = domTools.append;
 
-
+var t = {
+    lexemeFrequencyBarChart: function (target, data) {
+        var now = new moment.utc();
+        var barChartColorSequence = data.map(function (lex) {
+            return now.isAfter(moment.utc(lex.activeAfter)) ? '#ff0000' : '#000000';
+        });
+        
+        c3.generate({
+            bindto: target,
+            data: {
+                type: 'bar',
+                json: data,
+                keys: {
+                    x: 'lexeme',
+                    value: ['lexemeCount'],
+                },
+                color: function (c, d) {return barChartColorSequence[d.index];}
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    show: false
+                }
+            }
+        }).legend.hide('lexemeCount');
+    }
+};
 
 module.exports = function (getLexemes) {
     var container = el('div', 'lexeme-table-container');
@@ -15,35 +41,7 @@ module.exports = function (getLexemes) {
     return container;
 
     function success (response) {
-        var pattern = [];
-        var now = new moment.utc();
-        var lexemeCounts = response.lexemes.map(function (lex) {
-            pattern.push(now.isAfter(moment.utc(lex.activeAfter)) ? '#ff0000' : '#000000');
-            return lex.lexemeCount;
-        });
-        
-        console.log(pattern);
-
-        c3.generate({
-            bindto: chart,
-            data: {
-                type: 'bar',
-                json: response.lexemes,
-                keys: {
-                    x: 'lexeme', // it's possible to specify 'x' when category axis
-                    value: ['lexemeCount'],
-                },
-                color: function (c, d) {return pattern[d.index];}
-            },
-            //color: {pattern: pattern},
-            axis: {
-                x: {
-                    type: 'category',
-                    show: false
-                }
-            }
-        }).legend.hide('lexemeCount');
-
+        t.lexemeFrequencyBarChart(chart, response.lexemes);
     };
 
     function failure (error) {
