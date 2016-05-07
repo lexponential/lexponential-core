@@ -51,15 +51,18 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     auth0_id = db.Column(db.Integer)
+    points = db.Column(db.Integer)
 
     def __init__(self, auth0_id):
         self.auth0_id = auth0_id
+        self.points = 0
 
     @property
     def serialize(self):
         return {
             'id': self.id,
-            'auth0Id': self.auth0_id
+            'auth0Id': self.auth0_id,
+            'points': self.points
         }
 
 
@@ -131,6 +134,7 @@ class User_Lexeme(db.Model):
             'activeAfter': self.active_after
         }
 
+
 # the base route which renders a template
 @app.route('/')
 def index ():
@@ -167,13 +171,13 @@ def verify_flashcards ():
     lexeme_ids = [lexeme['id'] for lexeme in payload['lexemes']]
     for id in lexeme_ids:
         lexeme = User_Lexeme.query.filter(User_Lexeme.id==id).first()
-        print(lexeme.active_after)
-        print(lexeme.success_count)
         User_Lexeme \
             .query \
             .filter(User_Lexeme.id==id) \
             .update({"success_count": lexeme.success_count + 1, "active_after": lexeme.active_after + timedelta(minutes=5**lexeme.success_count + 2)}, synchronize_session=False)
         db.session.commit()
+    user.points = user.points + 10
+    db.session.commit()
     flashcards = flashcard_deck(user)
     return jsonify({'flashcards': flashcards})
 
