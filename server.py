@@ -14,6 +14,7 @@ from werkzeug.local import LocalProxy
 from dotenv import Dotenv
 from auth import authenticate, requires_auth
 
+from languages import languages
 from translation.random_translation import translate
 
 app = Flask(__name__)
@@ -63,6 +64,28 @@ class User(db.Model):
             'id': self.id,
             'auth0Id': self.auth0_id,
             'points': self.points
+        }
+
+
+class Language_Pair(db.Model):
+    __tablename__ = 'languages'
+    id = db.Column(db.Integer, primary_key=True)
+    from_language = db.Column(db.String(80))
+    to_language = db.Column(db.String(80))
+    owner = db.Column(db.Integer)
+
+    def __init__(self, to_language, from_language, owner):
+        self.to_language = to_language
+        self.from_language = from_language
+        self.owner = owner
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'toLanguage': self.to_language,
+            'fromLanguage': self.from_language,
+            'owner': self.owner,
         }
 
 
@@ -180,6 +203,37 @@ def verify_flashcards ():
     db.session.commit()
     flashcards = flashcard_deck(user)
     return jsonify({'flashcards': flashcards})
+
+
+@app.route('/languages')
+@cross_origin(headers=['Content-Type', 'Authorization'])
+@requires_auth
+def get_languages ():
+    user = verify_or_create_user()
+    #languages = [language.serialize for language in Language.query.filter_by(owner=user.id).all()]
+    langs = [{"name": lang, "abbreviation": languages[lang]} for lang in languages]
+    return jsonify({"languages": langs})
+
+
+@app.route('/languages/create', methods=['POST'])
+@cross_origin(headers=['Content-Type', 'Authorization'])
+@requires_auth
+def create_language ():
+    user = verify_or_create_user()
+    payload = request.get_json()
+    from_language = payload['fromLanguage']
+    to_language = payload['toLanguage']
+    if not from_language in languages and to_language in languages:
+        # Should actually return a 400 or maybe 412
+        return jsonify({'success': False})
+
+    prior = Language_Pair.query.filter_by(to_language=to_language, from_language=from_language, owner=user.id).first()
+    if not prior:
+        new_language_pair = Language_Pair(to_language, from_language, user.id)
+        db.session.add(new_language_pair)
+        db.session.commit()
+
+    return jsonify({'success': True})
 
 
 @app.route('/lexemes')

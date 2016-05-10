@@ -1,6 +1,7 @@
 
 module.exports = {
     baseURL: 'http://localhost:5000',
+    defaultLanguage: 'en',
          languages: {
              "afrikaans":"af",
              "albanian":"sq",

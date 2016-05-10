@@ -8,9 +8,9 @@ function deepCopy (obj) {
 module.exports = function () {
   var state = {
     loggedIn: false,
-    nodes: [],
-    edges: [],
-    lexemes: []
+    points: 0,
+    lexemes: [],
+    languages: []
   };
 
   var lock = new Auth0Lock(
@@ -75,6 +75,39 @@ module.exports = function () {
         var res = JSON.parse(rawData.responseText);
         state.lexemes = res.flashcards;
         success(res);
+      });
+  };
+
+
+  this.addLanguage = function (fromLanguage, toLanguage) {
+    url = config.baseURL + '/languages/create';
+    var token = localStorage.getItem('id_token');
+    var data = JSON.stringify({
+        toLanguage: config.defaultLanguage,
+        fromLanguage: fromLanguage
+    });
+    d3.xhr(url)
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer " + token)
+      .post(data, function(err, rawData){
+        if (err) console.log(err);
+        var res = rawData;
+        console.log("got response", res);
+      });
+
+  };
+
+  this.getLanguages = function (success, error) {
+    var url = config.baseURL + '/languages';
+    var token = localStorage.getItem('id_token');
+    d3.xhr(url)
+      .header("Content-Type", "application/json")
+      .header("Authorization", "Bearer " + token)
+      .get(function(err, rawData){
+        if (err) error(err);
+        var res = JSON.parse(rawData.responseText);
+        state.languages = res.languages;
+        success(res.languages);
       });
   };
 

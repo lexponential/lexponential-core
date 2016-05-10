@@ -9,6 +9,7 @@ var v = {
     table: require('./views/table-view.js'),
     barChart: require('./views/barchart-view.js'),
     flashcards: require('./views/flashcards.js'),
+    languages: require('./views/languages.js'),
     clear: function () {document.body.innerHTML = '';}
 };
 
@@ -36,6 +37,12 @@ routes.tableView = function () {
   v.clear();
   console.log('tableView');
   v.table(coreLogic, routes);
+};
+
+routes.languages = function () {
+  v.clear();
+  console.log('languages');
+  v.languages(coreLogic, routes);
 };
 
 routes.barChart = function () {

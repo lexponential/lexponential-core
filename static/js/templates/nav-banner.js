@@ -30,13 +30,19 @@ module.exports = function (coreLogic, routes) {
     routes.barChart();
   });
 
+  var languages = el('span');
+  languages.innerText = 'languages';
+  languages.addEventListener('click', function () {
+    routes.languages();
+  });
+
   var flashcards = el('span');
   flashcards.innerText = 'flashcards';
   flashcards.addEventListener('click', function () {
     routes.flashcards();
   });
 
-  append(banner, enterText, flashcards, barChart, table, logout);
+  append(banner, languages, enterText, flashcards, barChart, table, logout);
   
   return banner;
 };
