@@ -76,6 +76,19 @@ body {
     background: #ff00f2; /* Old browsers */
 }
 
+.lexponential-container {
+    min-width: 300px;
+    max-width: 90%;
+    margin: 20px auto 10px auto;
+    padding: 20px;
+    background: rgba(255,255,255,0.8);
+}
+
+.lexponential-container table {
+    font-size: 0.8em;
+    width: 100%;
+}
+
 .flashcards-container {
     min-width: 300px;
     max-width: 50%;

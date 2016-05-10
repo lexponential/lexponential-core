@@ -32,7 +32,7 @@ var t = {
 };
 
 module.exports = function (getLexemes) {
-    var container = el('div', 'lexeme-table-container');
+    var container = el('div', 'lexponential-container');
     var chart = el('div');
     
     append(container, chart);

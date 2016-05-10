@@ -19,7 +19,7 @@ function tableCell (cellContent, row) {
 };
 
 module.exports = function (getTableContents) {
-    var container = el('div', 'lexeme-table-container');
+    var container = el('div', 'lexponential-container');
     var table = el('table');
     
     append(container, table);
