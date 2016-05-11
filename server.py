@@ -210,8 +210,13 @@ def verify_flashcards ():
 @requires_auth
 def get_languages ():
     user = verify_or_create_user()
-    #languages = [language.serialize for language in Language.query.filter_by(owner=user.id).all()]
     langs = [{"name": lang, "abbreviation": languages[lang]} for lang in languages]
+    user_langs = [language.from_language for language in Language_Pair.query.filter_by(owner=user.id).all()] 
+    for lang in langs:
+        if lang['abbreviation'] in user_langs:
+            lang['active'] = True
+        else:
+            lang['active'] = False
     return jsonify({"languages": langs})
 
 
