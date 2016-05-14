@@ -197,7 +197,7 @@ def verify_flashcards ():
         User_Lexeme \
             .query \
             .filter(User_Lexeme.id==id) \
-            .update({"success_count": lexeme.success_count + 1, "active_after": lexeme.active_after + timedelta(minutes=5**lexeme.success_count + 2)}, synchronize_session=False)
+            .update({"success_count": lexeme.success_count + 1, "active_after": datetime.utcnow() + timedelta(minutes=5**lexeme.success_count + 2)}, synchronize_session=False)
         db.session.commit()
     user.points = user.points + 10
     db.session.commit()
