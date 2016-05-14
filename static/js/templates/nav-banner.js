@@ -11,23 +11,17 @@ module.exports = function (coreLogic, routes) {
     coreLogic.logout();
     routes.logout();
   });
-  
-  var table = el('span');
-  table.innerText = 'lexeme table';
-  table.addEventListener('click', function () {
-    routes.tableView();
-  });
-  
+
   var enterText = el('span');
   enterText.innerText = 'enter text';
   enterText.addEventListener('click', function () {
     routes.main();
   });
 
-  var barChart = el('span');
-  barChart.innerText = 'bar chart';
-  barChart.addEventListener('click', function () {
-    routes.barChart();
+  var dashboard = el('span');
+  dashboard.innerText = 'dashboard';
+  dashboard.addEventListener('click', function () {
+    routes.dashboard();
   });
 
   var languages = el('span');
@@ -42,7 +36,7 @@ module.exports = function (coreLogic, routes) {
     routes.flashcards();
   });
 
-  append(banner, languages, enterText, flashcards, barChart, table, logout);
+  append(banner, languages, enterText, flashcards, dashboard, logout);
   
   return banner;
 };

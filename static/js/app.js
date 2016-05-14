@@ -6,8 +6,7 @@ window.coreLogic = coreLogic;
 var v = {
     login: require('./views/login.js'),
     main: require('./views/main.js'),
-    table: require('./views/table-view.js'),
-    barChart: require('./views/barchart-view.js'),
+    dashboard: require('./views/dashboard.js'),
     flashcards: require('./views/flashcards.js'),
     languages: require('./views/languages.js'),
     clear: function () {document.body.innerHTML = '';}
@@ -33,22 +32,16 @@ routes.logout = function () {
   routes.login();
 };
 
-routes.tableView = function () {
-  v.clear();
-  console.log('tableView');
-  v.table(coreLogic, routes);
-};
-
 routes.languages = function () {
   v.clear();
   console.log('languages');
   v.languages(coreLogic, routes);
 };
 
-routes.barChart = function () {
+routes.dashboard = function () {
   v.clear();
-  console.log('barChart');
-  v.barChart(coreLogic, routes);
+  console.log('dashboard');
+  v.dashboard(coreLogic, routes);
 };
 
 routes.flashcards = function () {
