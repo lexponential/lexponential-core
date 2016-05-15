@@ -3,7 +3,6 @@ var append = domTools.append;
 
 var t = {
   header: require('../templates/header.js'),
-  logoutBanner: require('../templates/logout-banner.js'),
   navBanner: require('../templates/nav-banner.js'),
   languageSelection: require('../templates/language-selection.js')
 };
