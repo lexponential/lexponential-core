@@ -4,7 +4,7 @@ var remove = domTools.remove;
 
 var t = {
   header: require('../templates/header.js'),
-  inputArea: require('../templates/input-area.js'),
+  paymentStripe: require('../templates/payment-stripe.js')
   navBanner: require('../templates/nav-banner.js')
 };
 
@@ -13,7 +13,7 @@ var main = function (coreLogic, routes) {
       document.body,
       t.header(),
       t.navBanner(coreLogic, routes),
-      t.inputArea(coreLogic)
+      t.paymentStripe(coreLogic, routes)
   );
 };
 
