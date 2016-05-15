@@ -47,7 +47,6 @@ def verify_or_create_user():
     return user
 
 
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
