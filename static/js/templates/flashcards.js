@@ -31,7 +31,7 @@ function Flashcard (flashcardData, correct, incorrect) {
 
     for (var i = 0; i < flashcardData.incorrectTranslations.length; i++) {
         var translation = el('div', 'flashcard-answer');
-        translation.innerText = flashcardData.correctTranslations[i];
+        translation.innerText = flashcardData.incorrectTranslations[i];
         translation.addEventListener('click', function () {
                 console.log('incorrect!');
                 incorrect();
@@ -54,12 +54,25 @@ module.exports = function (coreLogic, routes) {
 
     function success (response) {
         // make 3x the number of lexemes you get from the back-end
-        var flashcardData, i, lex;
+        var flashcardData, i, incorrectTranslations, lex;
         var flashcardsData = [];
-
-        for (i = 0; i < response.flashcards.length; i++) {
-            lex = response.flashcards[i];
-            flashcardData = {lexeme: lex.lexeme, correctTranslations: [lex.translation], incorrectTranslations: []};
+        var flashcards = response.flashcards;
+        var numberOfIncorrectTranslationsDisplayed = 3;
+        
+        for (i = 0; i < flashcards.length; i++) {
+            lex = flashcards[i];
+            
+            incorrectTranslations = _.sample(
+                _.without(_.pluck(flashcards, 'translation'), lex.translation),
+                numberOfIncorrectTranslationsDisplayed
+            );
+            
+            flashcardData = {
+              lexeme: lex.lexeme,
+              correctTranslations: [lex.translation],
+              incorrectTranslations: incorrectTranslations
+            };
+            
             flashcardsData.push(flashcardData);
         };
 
