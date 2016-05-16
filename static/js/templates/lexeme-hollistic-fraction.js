@@ -6,8 +6,7 @@ var append = domTools.append;
 module.exports = function (getTableContents) {
     var container = el('div', 'lexponential-container');
     var fraction = el('h3');
-    var subtext = el('p');
-
+    var subtext = el('p');    
     append(container, fraction, subtext);
 
     getTableContents(success, failure);
@@ -21,11 +20,15 @@ module.exports = function (getTableContents) {
         var dateFormat = 'ddd, DD MMM YYYY HH:mm:ss Z';
         
         for (var i = 0; i < lexemes.length; i++) {
-          now.isAfter(moment.utc(lexemes[i].activeAfter, dateFormat)) ? inactiveCount++ : activeCount++;
+          if (now.isAfter(moment.utc(lexemes[i].activeAfter, dateFormat))) {
+            inactiveCount += lexemes[i].lexemeCount;
+          } else {
+            activeCount += lexemes[i].lexemeCount;
+          }
         }
         
         fraction.innerText = '' + (Math.round(100 * (activeCount / (activeCount + inactiveCount)))) + '%';
-        subtext.innerText = 'You know ' + activeCount + ' of ' + (activeCount + inactiveCount) + ' lexemes in your lexicon.';
+        subtext.innerText = 'You know ' + activeCount + ' of ' + (activeCount + inactiveCount) + ' lexemes as they\'re used.';
     };
 
     function failure (error) {
