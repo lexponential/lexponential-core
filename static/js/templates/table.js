@@ -28,13 +28,13 @@ module.exports = function (getTableContents) {
 
     return container;
 
-    function success (response) {
-        console.log(response);
+    function success (lexemes) {
+        console.log(lexemes);
         var headerCell, row;
 
-        if (response.lexemes.length) {
+        if (lexemes.length) {
             row = el('tr');
-            for (var key in response.lexemes[0]) {
+            for (var key in lexemes[0]) {
                 headerCell = el('th');
                 headerCell.innerText = key;
                 append(row, headerCell);
@@ -42,8 +42,8 @@ module.exports = function (getTableContents) {
             append(table, row);
         }
 
-        for (var i = 0; i < response.lexemes.length; i++) {
-            row = tableRow(response.lexemes[i], i, response.lexemes);
+        for (var i = 0; i < lexemes.length; i++) {
+            row = tableRow(lexemes[i], i, lexemes);
             append(table, row);
         }
     };

@@ -6,6 +6,8 @@ var t = {
     lexemeFrequencyBarChart: function (target, data) {
         var now = new moment.utc();
         var dateFormat = 'ddd, DD MMM YYYY HH:mm:ss Z';
+        console.log('lexemeFrequencyBarChart');
+        console.log(data);
         var barChartColorSequence = data.map(function (lex) {
             return now.isAfter(moment.utc(lex.activeAfter, dateFormat)) ? '#ff0000' : '#000000';
         });
@@ -41,8 +43,9 @@ module.exports = function (getLexemes) {
 
     return container;
 
-    function success (response) {
-        t.lexemeFrequencyBarChart(chart, response.lexemes);
+    function success (lexemes) {
+      console.log('lexemes');  
+      t.lexemeFrequencyBarChart(chart, lexemes);
     };
 
     function failure (error) {

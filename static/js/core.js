@@ -5,6 +5,10 @@ function deepCopy (obj) {
   return JSON.parse(JSON.stringify(obj));
 };
 
+function deepEquals (obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+};
+
 module.exports = function () {
   var state = {
     loggedIn: false,
@@ -73,7 +77,6 @@ module.exports = function () {
       .get(function(err, rawData){
         if (err) error(err);
         var res = JSON.parse(rawData.responseText);
-        state.lexemes = res.flashcards;
         success(res);
       });
   };
@@ -115,14 +118,23 @@ module.exports = function () {
   this.getLexemes = function (success, error) {
     var url = config.baseURL + '/lexemes';
     var token = localStorage.getItem('id_token');
+    
+    /*
+    var localLexemes = deepCopy(state.lexemes); 
+    if (localLexemes.length) {
+      success(localLexemes);
+    }
+    */
+
     d3.xhr(url)
       .header("Content-Type", "application/json")
       .header("Authorization", "Bearer " + token)
       .get(function(err, rawData){
         if (err) error(err);
         var res = JSON.parse(rawData.responseText);
+        console.log('state.lexemes and res.lexemes are not the same!');
         state.lexemes = res.lexemes;
-        success(res);
+        success(deepCopy(state.lexemes));
       });
   };
 
