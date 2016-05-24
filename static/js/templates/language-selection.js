@@ -6,26 +6,29 @@ var append = domTools.append;
 var remove = domTools.remove;
 
 var t = {
-    languageCard: function (languageData, addLanguageCallback) {
+    languageCard: function (languageData, addLanguageCallback, selectLanguage, routes) {
         var card = el('div', 'language-card');
         var title = el('h3');
         title.innerText = languageData.name.toUpperCase();
         append(card, title);
+        var button = el('button');
+        button.innerText = 'study ' + languageData.name;
         
         if (!languageData.active) {
-            var button = el('button');
-            button.innerText = 'study ' + languageData.name;
             button.addEventListener('click', function () {
-                // at some point add a check to make sure the call succeeded
                 addLanguageCallback(languageData.abbreviation);
                 card.classList.add('active');
-                remove(button);
+                routes.main();
             });
-            append(card, button);
         } else {
+            button.addEventListener('click', function () {
+                selectLanguage(languageData.name)
+                routes.main();
+            });
             card.classList.add('active');
         }
         
+        append(card, button);
         return card;
     }
 };
@@ -37,7 +40,15 @@ module.exports = function (coreLogic, routes) {
 
     function success (languages) {
         _.each(languages, function (languageData) {
-            append(container, t.languageCard(languageData, coreLogic.addLanguage));
+            append(
+                container,
+                t.languageCard(
+                    languageData,
+                    coreLogic.addLanguage,
+                    coreLogic.selectLanguage,
+                    routes
+                )
+            );
         });
     };
 
