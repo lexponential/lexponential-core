@@ -12,6 +12,7 @@ function deepEquals (obj1, obj2) {
 module.exports = function () {
   var state = {
     loggedIn: false,
+    activeLanguage: '',
     points: 0,
     lexemes: [],
     languages: []
@@ -81,6 +82,13 @@ module.exports = function () {
       });
   };
 
+  this.getSelectedLanguage = function () {
+    return state.activeLanguage;
+  };
+
+  this.selectLanguage = function (language) {
+    state.activeLanguage = language;
+  };
 
   this.addLanguage = function (fromLanguage, toLanguage) {
     url = config.baseURL + '/languages/create';

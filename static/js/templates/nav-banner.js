@@ -1,4 +1,4 @@
-var domTools = require('../dom.js');
+var domTools = require('../utils/dom.js');
 var append = domTools.append;
 var el = domTools.el;
 
@@ -13,9 +13,13 @@ var t = {
 
 
 module.exports = function (coreLogic, routes) {
+  var selectedLanguage = coreLogic.getSelectedLanguage();
+
   var banner = el('div', 'nav-banner');
+  var languageText = 'languages';
+  languageText += selectedLanguage ? ': ' + selectedLanguage : '';
   
-  var languages = t.navElement('languages', routes.languages);
+  var languages = t.navElement(languageText, routes.languages);
   var enterText = t.navElement('enter text', routes.main);
   var flashcards = t.navElement('flashcards', routes.flashcards);
   var dashboard = t.navElement('dashboard', routes.dashboard);

@@ -1,4 +1,4 @@
-var append = require('../dom.js').append;
+var append = require('../utils/dom.js').append;
 
 var t = {
   header: require('../templates/header.js'),
