@@ -1,6 +1,6 @@
-var uuid = require('../uuid.js');
-var el = require('../dom.js').el;
-var append = require('../dom.js').append;
+var uuid = require('../utils/uuid.js');
+var el = require('../utils/dom.js').el;
+var append = require('../utils/dom.js').append;
 
 var t = {
     lexemeInput: function () {

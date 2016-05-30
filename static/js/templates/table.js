@@ -1,4 +1,4 @@
-var domTools = require('../dom.js');
+var domTools = require('../utils/dom.js');
 var el = domTools.el;
 var append = domTools.append;
 

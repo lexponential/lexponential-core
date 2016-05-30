@@ -1,4 +1,4 @@
-var el = require('../dom.js').el;
+var el = require('../utils/dom.js').el;
 
 module.exports = function (onclick) {
     var b = el('div', 'login-banner');
