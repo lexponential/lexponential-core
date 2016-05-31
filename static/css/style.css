@@ -7,14 +7,7 @@ body {
     padding: 0;
     margin: 0;
     height: 100%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00e9ff+0,ff00f2+100 */
-    background: #00e9ff; /* Old browsers */
-    background: -moz-linear-gradient(-45deg,  #00e9ff 0%, #ff00f2 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(-45deg,  #00e9ff 0%,#ff00f2 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(135deg,  #00e9ff 0%,#ff00f2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00e9ff', endColorstr='#ff00f2',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    background: #ddd;
 }
 
 .header {
@@ -89,7 +82,7 @@ body {
     width: 100%;
 }
 
-.flashcards-container {
+.flashcards-container, .languages-container {
     min-width: 300px;
     max-width: 50%;
     margin: 20px auto 10px auto;
@@ -124,8 +117,18 @@ body {
     color: #fff;
 }
 
+.language-card button {
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    background: #ff00f2;
+    font-size: 1.1em;
+    padding: 5px;
+    margin: 0px auto 10px auto;
+}
+
 .language-card h3 {
-    padding-bottom: 10px;
+    padding-bottom: 0px;
 }
 
 .language-card.active {

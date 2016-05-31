@@ -34,7 +34,7 @@ var t = {
 };
 
 module.exports = function (coreLogic, routes) {
-    var container = el('div', 'lexponential-container');
+    var container = el('div', 'languages-container');
     coreLogic.getLanguages(success, failure);
     return container;
 
