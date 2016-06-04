@@ -20,16 +20,22 @@ module.exports = function (coreLogic, routes) {
   languageText += selectedLanguage ? ': ' + selectedLanguage : '';
   
   var languages = t.navElement(languageText, routes.languages);
-  var enterText = t.navElement('enter text', routes.main);
-  var flashcards = t.navElement('flashcards', routes.flashcards);
-  var dashboard = t.navElement('dashboard', routes.dashboard);
   var logout = t.navElement('logout', function () {
     coreLogic.logout();
     routes.logout();
   });
 
-  append(banner, languages, enterText, flashcards, dashboard, logout);
+  append(banner, languages);
+
+  if (coreLogic.getSelectedLanguage()) {
+    var enterText = t.navElement('enter text', routes.main);
+    var flashcards = t.navElement('flashcards', routes.flashcards);
+    var dashboard = t.navElement('dashboard', routes.dashboard);
+    append(banner, enterText, flashcards, dashboard);
+  }   
   
+  append(banner, logout);  
+
   return banner;
 };
 

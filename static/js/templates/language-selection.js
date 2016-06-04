@@ -17,6 +17,7 @@ var t = {
         if (!languageData.active) {
             button.addEventListener('click', function () {
                 addLanguageCallback(languageData.abbreviation);
+                selectLanguage(languageData.name)
                 card.classList.add('active');
                 routes.main();
             });

@@ -9,7 +9,7 @@ window.coreLogic = coreLogic;
 
 var app = {
 init: function () {
-              var defaultRoute = routes.main;
+              var defaultRoute = routes.languages;
               coreLogic.parseHash(
                               defaultRoute,
                               function (err) {
